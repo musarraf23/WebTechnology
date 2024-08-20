@@ -9,16 +9,25 @@
     justify-content: center;
     align-items: center;
 }
+i{
+    font-size: 40px;
+    margin-top: 50px;
+}
 .list{
     list-style: none;
+    font-size: larger;
     
+}
+li{
+    padding: 8px;
 }
 a{
   color:white;  
   text-decoration: none;
   
+  
 }
-:hover .text{
+:hover {
     color: yellow;
 }
 p{
@@ -26,4 +35,6 @@ p{
     font-size: x-large;
     text-align: center;
     justify-content: center;
+    font-size:40px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
