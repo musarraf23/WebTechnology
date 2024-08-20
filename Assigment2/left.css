@@ -1,0 +1,29 @@
+.left{
+    background-color: #006595;
+
+}
+.icons{
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.list{
+    list-style: none;
+    
+}
+a{
+  color:white;  
+  text-decoration: none;
+  
+}
+:hover .text{
+    color: yellow;
+}
+p{
+    color: white;
+    font-size: x-large;
+    text-align: center;
+    justify-content: center;
+}

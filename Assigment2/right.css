@@ -1,0 +1,20 @@
+.section2{
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    
+}
+.subsection2{
+margin-left: 25px;
+}
+.btn{
+    color: white;
+    background-color: #006595;
+    border: none;
+    padding: 10px;
+    margin-left: 20px;
+}
+.main-heading{
+    color: #006595;
+}
