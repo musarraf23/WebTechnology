@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+  <student>
+    <name>John Doe</name>
+    <rollno>12345</rollno>
+    <department>Computer Science</department>
+    <year>3</year>
+    <university>ABC University</university>
+  </student>
+
+  <student>
+    <name>Jane Smith</name>
+    <rollno>67890</rollno>
+    <department>Electrical Engineering</department>
+    <year>2</year>
+    <university>XYZ University</university>
+  </student>
+</students>
