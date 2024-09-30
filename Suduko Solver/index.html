@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6x6 Sudoku Solver with Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+
+        td {
+            border: 2px solid #000;
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 1.5em;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        /* Styling for fixed values */
+        .fixed {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        /* Styling for 3x2 block borders */
+        td:nth-child(3), td:nth-child(6) {
+            border-right: 4px solid black;
+        }
+
+        tr:nth-child(2) td, tr:nth-child(4) td {
+            border-bottom: 4px solid black;
+        }
+
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .error {
+            background-color: #f8d7da;
+        }
+
+        #timer {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>6x6 Sudoku Solver (Medium)</h1>
+        <p>Fill the grid such that every row, column, and 3x2 block contains numbers from 1 to 6.</p>
+        
+        <div id="timer">Time: 00:00</div>
+
+        <table id="sudoku-grid">
+            <tbody>
+                <tr>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input class="fixed" value="6" readonly></td>
+                </tr>
+                <tr>
+                    <td><input></td>
+                    <td><input class="fixed" value="3" readonly></td>
+
+                    <td><input></td>
+                    <td><input class="fixed" value="5" readonly></td>
+
+                    <td><input></td>
+                    <td><input class="fixed" value="4" readonly></td>
+                </tr>
+                <tr>
+                    <td><input class="fixed" value="1" readonly></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input class="fixed" value="5" readonly></td>
+                    <td><input class="fixed" value="2" readonly></td>
+                </tr>
+                <tr>
+                    <td><input class="fixed" value="3" readonly></td>
+                    <td><input class="fixed" value="5" readonly></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                </tr>
+                <tr>
+                    <td><input class="fixed" value="4" readonly></td>
+                    <td><input></td>
+                    <td><input class="fixed" value="3" readonly></td>
+
+                    <td><input></td>
+                    <td><input class="fixed" value="6" readonly></td>
+
+                    <td><input></td>
+                </tr>
+               
+                <tr>
+                    <td><input class="fixed" value="6" readonly></td>
+                    <td><input></td>
+                    <td><input class="fixed" value="5" readonly></td>
+
+                    <td><input></td>
+                    <td><input></td>
+                    <td><input></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button onclick="validateGrid()">Validate</button>
+        <button onclick="solveGrid()">Solve</button>
+        <button onclick="resetGrid()">Reset</button>
+    </div>
+
+    <script>
+        let timer;
+        let totalSeconds = 0;
+
+        // Start the timer as soon as the page loads
+        window.onload = function() {
+            startTimer();
+        };
+
+        // Timer function to update time display
+        function startTimer() {
+    timer = setInterval(() => {
+        totalSeconds++;
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+        document.getElementById("timer").textContent = `Time: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+}
+
+        function resetTimer() {
+            clearInterval(timer);
+            totalSeconds = 0;
+            document.getElementById("timer").textContent = "Time: 00:00";
+            startTimer();
+        }
+
+        function validateGrid() {
+            let grid = [];
+            const inputs = document.querySelectorAll('input:not(.fixed)');
+            let isValid = true;
+
+            // Convert the input values to a 2D array for validation
+            for (let i = 0; i < 6; i++) {
+                grid[i] = [];
+                for (let j = 0; j < 6; j++) {
+                    let input = document.querySelectorAll('tr')[i].children[j].querySelector('input');
+                    let val = input.value ? parseInt(input.value) : 0;
+                    grid[i][j] = val;
+                }
+            }
+
+            // Reset all input background colors
+            inputs.forEach(input => input.classList.remove('error'));
+
+            // Validate the input
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 6; j++) {
+                    let input = document.querySelectorAll('tr')[i].children[j].querySelector('input');
+                    if (grid[i][j] !== 0 && !isSafe(grid, i, j, grid[i][j])) {
+                        input.classList.add('error');
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (isValid) {
+                alert("All numbers are correctly placed!");
+            } else {
+                alert("Some numbers are incorrectly placed!");
+            }
+        }
+
+        function isSafe(grid, row, col, num) {
+            // Check the row and column
+            for (let x = 0; x < 6; x++) {
+                if ((grid[row][x] === num && x !== col) || (grid[x][col] === num && x !== row)) {
+                    return false;
+                }
+            }
+
+            // Check the 3x2 subgrid
+            let startRow = row - row % 2;
+            let startCol = col - col % 3;
+
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (grid[i + startRow][j + startCol] === num && (i + startRow !== row || j + startCol !== col)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function solveGrid() {
+            const solution = [
+                [3, 4, 2, 5, 1, 6],
+                [1, 6, 3, 4, 5, 2],
+                [6, 3, 5, 2, 4, 1],
+                [5, 1, 4, 6, 3, 2],
+                [4, 2, 1, 3, 6, 5],
+                [6, 5, 2, 1, 4, 3]
+            ];
+
+            let grid = document.querySelectorAll('tr');
+            for (let i = 0; i < 6; i++) {
+                for (let j = 0; j < 6; j++) {
+                    let input = grid[i].children[j].querySelector('input');
+                    if (!input.classList.contains('fixed')) {
+                        input.value = solution[i][j];
+                    }
+                }
+            }
+        }
+
+        function resetGrid() {
+            const inputs = document.querySelectorAll('input:not(.fixed)');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('error');
+            });
+            resetTimer();
+        }
+    </script>
+</body>
+</html>

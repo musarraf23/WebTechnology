@@ -7,7 +7,7 @@ const weatherInfo = document.getElementById("weatherInfo");
 getWeatherButton.addEventListener("click", () => {
     const place = placeInput.value;
 
-    // Example using OpenWeatherMap API
+    
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${apiKey}&units=metric`)
         .then(response => response.json())
         .then(data => {
